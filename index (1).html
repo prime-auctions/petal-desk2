@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Petal Desk — Work Hub</title>
+<style>
+:root{--ink:#453b3d;--muted:#897b7e;--rose:#b76e83;--rose2:#f4e3e8;--cream:#fbf8f4;--paper:#fffdfb;--line:#eadfe0;--shadow:0 10px 30px #5b35400b}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.shell{display:grid;grid-template-columns:238px 1fr;min-height:100vh}
+.side{padding:28px 17px;background:#fffaf8;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:28px}
+.brand{display:flex;gap:11px;align-items:center;padding:0 9px}.mark{width:39px;height:39px;border-radius:14px;background:var(--rose2);display:grid;place-items:center;color:var(--rose);font-size:22px}
+.brand strong{display:block;font-family:Georgia,serif;font-size:21px;font-weight:500}.brand small{color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+.navlabel{padding:0 11px 6px;color:#aa9b9e;font-size:10px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase}
+.nav{display:grid;gap:5px}.nav button{border:0;background:transparent;color:#76686c;text-align:left;padding:11px 12px;border-radius:11px;display:flex;gap:12px;align-items:center}
+.nav button.active,.nav button:hover{background:var(--rose2);color:#8c4c60}.nav .ico{width:19px;text-align:center;font-size:17px}
+.sidefoot{margin-top:auto;background:#f7ecee;border-radius:15px;padding:15px;color:#785d65;font-size:12px}.sidefoot strong{display:block;margin-bottom:4px;font-size:13px}
+.sidefoot .btn{width:100%;margin-top:10px}#driveStatus{display:block;margin-top:8px;font-size:11px}
+.main{min-width:0;padding:28px clamp(18px,4vw,52px) 50px}.top{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:30px}
+.eyebrow{color:var(--rose);font-size:11px;font-weight:750;letter-spacing:1.8px;text-transform:uppercase}.top h1{font:500 clamp(27px,3vw,37px)/1.2 Georgia,serif;margin:5px 0}.subtitle{color:var(--muted);font-size:13px}
+.topright{display:flex;gap:9px;align-items:center}.avatar{width:38px;height:38px;border-radius:50%;background:#e9d2d9;color:#8b4c61;display:grid;place-items:center;font-weight:700}
+.btn{border:1px solid var(--line);background:white;color:var(--ink);padding:10px 14px;border-radius:10px;font-weight:650;font-size:13px}.btn.primary{background:var(--rose);border-color:var(--rose);color:white}.btn.soft{background:var(--rose2);border-color:var(--rose2);color:#8d4e62}.btn:hover{filter:brightness(.97)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:22px}.stat,.panel{background:var(--paper);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow)}.stat{padding:17px}
+.stathead{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:12px}.stat .big{font:500 30px Georgia,serif;margin:10px 0 4px}.stat .note{font-size:11px;color:var(--muted)}.stat .sym{background:#f8edf0;border-radius:10px;width:32px;height:32px;display:grid;place-items:center}
+.grid2{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(260px,.85fr);gap:18px}.panel{padding:20px;margin-bottom:18px;min-width:0}
+.panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px}.panelhead h2{font:500 22px Georgia,serif;margin:0}.panelhead p{font-size:12px;color:var(--muted);margin:3px 0 0}
+.tasklist{display:grid;gap:8px}.task{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:11px;align-items:start;padding:13px;border:1px solid #f0e8e8;border-radius:12px;background:#fff}
+.task input[type=checkbox]{accent-color:var(--rose);margin-top:4px;width:16px;height:16px}.tasktitle{font-weight:650;font-size:13px;overflow-wrap:anywhere}.task.done .tasktitle{text-decoration:line-through;color:#a49a9d}
+.taskmeta{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px;color:var(--muted);font-size:11px}.pill{display:inline-flex;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;background:#f3edef;color:#806d73}
+.pill.high{background:#f9e4e2;color:#a04f4b}.pill.medium{background:#f8efd9;color:#8d6b2d}.pill.low{background:#e8f2eb;color:#54765e}
+.taskactions{display:flex;gap:5px}.iconbtn{border:0;background:transparent;color:#9a898e;padding:4px 6px;border-radius:7px}.iconbtn:hover{background:#f7ecee}.empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}
+.quickform{display:grid;gap:11px}.field{display:grid;gap:5px}.field label{font-size:11px;color:#796a6e;font-weight:700}
+.field input,.field select,.field textarea,.search{width:100%;border:1px solid var(--line);border-radius:9px;background:white;padding:10px 11px;outline:none;color:var(--ink)}.field textarea{min-height:95px;resize:vertical}
+.rowfields{display:grid;grid-template-columns:1fr 1fr;gap:10px}.section{display:none}.section.active{display:block}.searchrow{display:flex;gap:10px;align-items:center;margin-bottom:15px}.search{max-width:350px}
+.doclist,.assetlist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.doc,.asset{border:1px solid var(--line);border-radius:13px;padding:15px;background:white;display:flex;gap:12px;min-width:0}
+.fileico{flex:none;width:39px;height:43px;border-radius:10px;background:#f7e9ed;display:grid;place-items:center;font-size:19px}.doc strong,.asset strong{font-size:13px;display:block;overflow-wrap:anywhere}.doc small,.asset small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+.doc .btn,.asset .btn{margin-top:10px;padding:7px 9px;font-size:11px}.docinfo{min-width:0;flex:1}.asset{display:block}.asset .fileico{margin-bottom:11px}
+.notice{background:#f8eff1;border:1px solid #efdee3;padding:12px 14px;border-radius:11px;color:#765c64;font-size:12px;margin-bottom:15px}
+.reportcards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:15px 0}.reportcard{padding:15px;border-radius:12px;background:#f8eff1}.reportcard span{display:block;font-size:11px;color:var(--muted)}.reportcard strong{font:500 27px Georgia,serif}
+.modalback{position:fixed;inset:0;background:#35272c66;display:none;align-items:center;justify-content:center;padding:18px;z-index:50}.modalback.open{display:flex}
+.modal{background:var(--paper);width:min(560px,100%);max-height:90vh;overflow:auto;border-radius:18px;padding:24px}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.modalhead h2{font:500 25px Georgia,serif;margin:0}
+.close{border:0;background:#f5e9ec;border-radius:50%;width:32px;height:32px}.hidden{display:none!important}.footer{font-size:11px;color:#a39398;text-align:center;margin-top:18px}
+@media(max-width:900px){.shell{grid-template-columns:190px 1fr}.stats{grid-template-columns:repeat(2,1fr)}.grid2,.doclist,.assetlist{grid-template-columns:1fr}}
+@media(max-width:620px){.shell{display:block}.side{padding:12px;position:sticky;top:0;z-index:30;border-right:0;border-bottom:1px solid var(--line);gap:12px}.navlabel{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:8px 10px;font-size:12px}
+.sidefoot{margin-top:0;padding:10px}.sidefoot p{display:none}.main{padding:22px 14px}.topright .btn{display:none}.rowfields{grid-template-columns:1fr}.reportcards{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="side">
+ <div class="brand"><div class="mark">✿</div><div><strong>Petal Desk</strong><small>Your work, in bloom</small></div></div>
+ <div><div class="navlabel">Workspace</div><nav class="nav" id="nav">
+  <button type="button" class="active" data-page="dashboard"><span class="ico">⌂</span>Dashboard</button>
+  <button type="button" data-page="tasks"><span class="ico">✓</span>My tasks</button>
+  <button type="button" data-page="documents"><span class="ico">▤</span>Documents</button>
+  <button type="button" data-page="marketing"><span class="ico">✧</span>Marketing studio</button>
+  <button type="button" data-page="reports"><span class="ico">▥</span>Monthly reports</button>
+ </nav></div>
+ <div class="sidefoot"><strong>Little by little.</strong><p>Only upload files you are authorised to store in this Google Drive account.</p>
+  <button class="btn soft" id="driveBtn" type="button">☁ Connect Google Drive</button><span id="driveStatus">Saved in this browser</span></div>
+</aside>
+<main class="main">
+ <header class="top"><div><div class="eyebrow" id="eyebrow">YOUR WORKSPACE</div><h1 id="pageTitle">Good day. Let's get focused.</h1><div class="subtitle" id="pageSub">A little structure can make a busy day feel lighter.</div></div><div class="topright"><button class="btn primary" id="topAdd">＋ New task</button><div class="avatar">PL</div></div></header>
+ <section id="dashboard" class="section active">
+  <div class="stats">
+   <div class="stat"><div class="stathead">Today's tasks <span class="sym">☼</span></div><div class="big" id="todayCount">0</div><div class="note">Due today</div></div>
+   <div class="stat"><div class="stathead">Completed this month <span class="sym">✓</span></div><div class="big" id="completedCount">0</div><div class="note">Look at how far you've come</div></div>
+   <div class="stat"><div class="stathead">Coming up <span class="sym">↗</span></div><div class="big" id="upcomingCount">0</div><div class="note">Open tasks due in 7 days</div></div>
+   <div class="stat"><div class="stathead">Overdue <span class="sym">!</span></div><div class="big" id="overdueCount">0</div><div class="note">Ready for a quick review</div></div>
+  </div>
+  <div class="grid2">
+   <div class="panel"><div class="panelhead"><div><h2>Today's focus</h2><p>Your next steps, all in one place.</p></div><button class="btn" data-goto="tasks">View all</button></div><div class="tasklist" id="todayList"></div></div>
+   <div><div class="panel"><div class="panelhead"><div><h2>Quick capture</h2><p>Turn a request into an action item.</p></div></div>
+    <form id="quickForm" class="quickform">
+     <div class="field"><label for="rawRequest">PASTE THE REQUEST</label><textarea id="rawRequest" placeholder="e.g. Please update the property post and send it to me before Thursday..."></textarea></div>
+     <button class="btn soft" type="button" id="polish">✧ Tidy up request</button>
+     <div class="field"><label for="taskTitle">TASK TITLE</label><input id="taskTitle" required placeholder="A clear, actionable task"></div>
+     <div class="field"><label for="taskNotes">DETAILS / ORIGINAL REQUEST</label><textarea id="taskNotes" placeholder="Keep context, links or the original wording here."></textarea></div>
+     <div class="rowfields"><div class="field"><label for="taskDue">DUE DATE</label><input type="date" id="taskDue"></div><div class="field"><label for="taskPriority">PRIORITY</label><select id="taskPriority"><option>Medium</option><option>High</option><option>Low</option></select></div></div>
+     <div class="rowfields"><div class="field"><label for="taskCategory">CATEGORY</label><select id="taskCategory"><option>Admin</option><option>Marketing</option><option>Reception</option><option>HR</option><option>Property</option><option>Other</option></select></div><div class="field"><label for="taskStatus">STATUS</label><select id="taskStatus"><option>To do</option><option>In progress</option><option>Waiting</option></select></div></div>
+     <button class="btn primary" type="submit">＋ Add task</button>
+    </form>
+   </div></div>
+  </div>
+ </section>
+ <section id="tasks" class="section">
+  <div class="panel"><div class="panelhead"><div><h2>My tasks</h2><p>Every request has a next step.</p></div><button class="btn primary" id="taskAdd">＋ New task</button></div>
+   <div class="searchrow"><input class="search" id="taskSearch" placeholder="Search tasks…"><select class="search" id="taskFilter" style="max-width:190px"><option value="all">All tasks</option><option value="open">Open tasks</option><option value="done">Completed</option><option value="overdue">Overdue</option></select></div><div class="tasklist" id="allTasks"></div>
+  </div>
+ </section>
+ <section id="documents" class="section">
+  <div class="panel"><div class="panelhead"><div><h2>Document library</h2><p>Find the right file and keep track of updates.</p></div><button class="btn primary" id="uploadBtn">＋ Add document</button></div>
+   <div class="notice">Files you add are uploaded to a "Petal Desk" folder in your Google Drive (connect Drive first). Up to 10 MB each.</div>
+   <div class="searchrow"><input class="search" id="docSearch" placeholder="Search documents…"><select class="search" id="docFilter" style="max-width:190px"><option value="all">All folders</option><option>HR & onboarding</option><option>Brand & marketing</option><option>Property</option><option>Admin & compliance</option><option>Other</option></select></div>
+   <input type="file" id="fileInput" class="hidden">
+   <div class="doclist" id="docList"></div>
+  </div>
+ </section>
+ <section id="marketing" class="section">
+  <div class="panel"><div class="panelhead"><div><h2>Marketing studio</h2><p>Your Canva links, reusable templates and campaign references.</p></div><button class="btn primary" id="assetAdd">＋ Add resource</button></div>
+   <div class="notice">Canva designs stay in Canva; save a link here to open the original.</div>
+   <div class="searchrow"><input class="search" id="assetSearch" placeholder="Search marketing resources…"></div><div class="assetlist" id="assetList"></div>
+  </div>
+ </section>
+ <section id="reports" class="section">
+  <div class="panel"><div class="panelhead"><div><h2>Monthly report</h2><p>A clear summary of your work for the month you choose.</p></div><button class="btn primary" id="exportCsv">Export CSV ↓</button></div>
+   <div class="rowfields" style="max-width:450px"><div class="field"><label for="reportMonth">REPORT MONTH</label><input type="month" id="reportMonth"></div><div class="field"><label for="reportCategory">CATEGORY</label><select id="reportCategory"><option value="all">All categories</option><option>Admin</option><option>Marketing</option><option>Reception</option><option>HR</option><option>Property</option><option>Other</option></select></div></div>
+   <div class="reportcards"><div class="reportcard"><span>Completed in month</span><strong id="repDone">0</strong></div><div class="reportcard"><span>Still open</span><strong id="repOpen">0</strong></div><div class="reportcard"><span>Marked overdue</span><strong id="repLate">0</strong></div></div>
+   <div class="panelhead"><div><h2 style="font-size:19px">Work breakdown</h2><p>Tasks grouped by category.</p></div></div><div id="categoryBreakdown"></div>
+   <div class="panelhead" style="margin-top:24px"><div><h2 style="font-size:19px">Report details</h2></div></div><div class="tasklist" id="reportList"></div>
+  </div>
+ </section>
+ <div class="footer">Petal Desk · Saved in your browser, and in Google Drive when connected</div>
+</main>
+</div>
+<div class="modalback" id="modalBack"><div class="modal"><div class="modalhead"><h2 id="modalTitle"></h2><button class="close" id="modalClose" type="button">×</button></div><form id="modalForm" class="quickform"></form></div></div>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+/* ====== SETUP: paste your Google OAuth Client ID between the quotes (see instructions) ====== */
+const CLIENT_ID='PASTE_YOUR_CLIENT_ID_HERE';
+/* ========================================================================================== */
+const $=id=>document.getElementById(id);
+const KEY='petalDesk.v1',DRIVE_FLAG='petalDesk.drive';
+const pad=n=>String(n).padStart(2,'0');
+const iso=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const todayISO=()=>iso(new Date()),monthISO=()=>todayISO().slice(0,7);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,9);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let tasks=[],docs=[],assets=[],updated=0,pendingUpdate=null;
+try{const d=JSON.parse(localStorage.getItem(KEY)||'{}');tasks=d.tasks||[];docs=d.docs||[];assets=d.assets||[];updated=d.updated||0}catch(e){}
+const data=()=>({tasks,docs,assets,updated});
+function save(){updated=Date.now();try{localStorage.setItem(KEY,JSON.stringify(data()))}catch(e){alert('Could not save in this browser.')}render();pushDrive()}
+
+/* ---------- Google Drive ---------- */
+let token=null,tokenClient=null,folderId=null,fileId=null,saving=false,dirty=false;
+const setStatus=m=>$('driveStatus').textContent=m;
+const hasId=()=>!CLIENT_ID.includes('PASTE_');
+async function api(url,opts={}){
+  const r=await fetch(url,{...opts,headers:{Authorization:'Bearer '+token,...(opts.headers||{})}});
+  if(r.status===401){token=null;$('driveBtn').classList.remove('hidden');setStatus('Drive session ended. Click Connect.');throw new Error('expired')}
+  if(!r.ok)throw new Error(await r.text());return r;
+}
+const q=s=>encodeURIComponent(s);
+async function ensureFolder(){
+  if(folderId)return;
+  const r=await(await api(`https://www.googleapis.com/drive/v3/files?q=${q("name='Petal Desk' and mimeType='application/vnd.google-apps.folder' and trashed=false")}&fields=files(id)`)).json();
+  if(r.files.length){folderId=r.files[0].id;return}
+  const c=await(await api('https://www.googleapis.com/drive/v3/files?fields=id',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:'Petal Desk',mimeType:'application/vnd.google-apps.folder'})})).json();
+  folderId=c.id;
+}
+async function upload(content,mime,name,existingId){
+  const b='pd'+Date.now(),meta=existingId?{}:{name,parents:[folderId]};
+  const body=new Blob([`--${b}\r\nContent-Type: application/json\r\n\r\n${JSON.stringify(meta)}\r\n--${b}\r\nContent-Type: ${mime}\r\n\r\n`,content,`\r\n--${b}--`]);
+  const url=`https://www.googleapis.com/upload/drive/v3/files${existingId?'/'+existingId:''}?uploadType=multipart&fields=id,name,size,webViewLink`;
+  return (await api(url,{method:existingId?'PATCH':'POST',headers:{'Content-Type':'multipart/related; boundary='+b},body})).json();
+}
+async function pushDrive(){
+  if(!token)return;if(saving){dirty=true;return}
+  saving=true;setStatus('Saving to Drive…');
+  try{await ensureFolder();const f=await upload(JSON.stringify(data()),'application/json','petal-desk-data.json',fileId);fileId=f.id;setStatus('✓ Saved to Google Drive')}
+  catch(e){if(e.message!=='expired')setStatus('Could not save to Drive. Will retry on next change.');console.error(e)}
+  saving=false;if(dirty){dirty=false;pushDrive()}
+}
+async function syncDown(){
+  setStatus('Loading from Drive…');
+  try{
+    await ensureFolder();
+    const r=await(await api(`https://www.googleapis.com/drive/v3/files?q=${q(`name='petal-desk-data.json' and '${folderId}' in parents and trashed=false`)}&fields=files(id)`)).json();
+    if(r.files.length){
+      fileId=r.files[0].id;
+      const remote=await(await api(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`)).json();
+      if((remote.updated||0)>updated){tasks=remote.tasks||[];docs=remote.docs||[];assets=remote.assets||[];updated=remote.updated;localStorage.setItem(KEY,JSON.stringify(data()));render();setStatus('✓ Loaded from Google Drive');return}
+    }
+    await pushDrive();
+  }catch(e){if(e.message!=='expired')setStatus('Could not reach Drive.');console.error(e)}
+}
+function initDrive(){
+  if(!hasId()||!window.google||!google.accounts){return false}
+  tokenClient=google.accounts.oauth2.initTokenClient({client_id:CLIENT_ID,scope:'https://www.googleapis.com/auth/drive.file',
+    callback:r=>{if(r.error){setStatus('Not connected');return}token=r.access_token;localStorage.setItem(DRIVE_FLAG,'1');$('driveBtn').classList.add('hidden');syncDown()},
+    error_callback:()=>setStatus('Click Connect to sign in')});
+  if(localStorage.getItem(DRIVE_FLAG)){setStatus('Click Connect to sign in again')}
+  return true;
+}
+$('driveBtn').onclick=()=>{
+  if(!hasId()){alert('Drive is not set up yet. Open index.html, paste your Google Client ID at the top (CLIENT_ID), and publish again. Until then, everything is saved in this browser.');return}
+  if(!tokenClient&&!initDrive()){alert('Google sign-in is still loading. Please try again in a moment.');return}
+  tokenClient.requestAccessToken({prompt:localStorage.getItem(DRIVE_FLAG)?'':'consent'});
+};
+async function uploadFileToDrive(file){
+  if(!token)throw new Error('Please connect Google Drive first (button at the bottom of the sidebar).');
+  if(file.size>10*1024*1024)throw new Error('Please choose a file smaller than 10 MB.');
+  await ensureFolder();return upload(file,file.type||'application/octet-stream',file.name);
+}
+
+/* ---------- Navigation ---------- */
+const infoMap={dashboard:['YOUR WORKSPACE',"Good day. Let's get focused.",'A little structure can make a busy day feel lighter.'],tasks:['YOUR WORKSPACE','My tasks','Every request has a next step.'],documents:['YOUR LIBRARY','Documents','The current version, easier to find.'],marketing:['CREATIVE CORNER','Marketing studio','Keep your brand resources close at hand.'],reports:['YOUR PROGRESS','Monthly reports','A record of the work you make happen.']};
+function go(p){
+  document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===p));
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));
+  const i=infoMap[p];$('eyebrow').textContent=i[0];$('pageTitle').textContent=i[1];$('pageSub').textContent=i[2];window.scrollTo(0,0);
+}
+document.querySelectorAll('#nav button').forEach(b=>b.addEventListener('click',()=>go(b.dataset.page)));
+document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.goto)));
+const focusNew=()=>{go('dashboard');$('taskTitle').focus();$('taskTitle').scrollIntoView({behavior:'smooth',block:'center'})};
+$('topAdd').onclick=focusNew;$('taskAdd').onclick=focusNew;
+
+/* ---------- Tasks ---------- */
+const isDone=t=>t.status==='Completed',isOverdue=t=>!isDone(t)&&t.due&&t.due<todayISO();
+const prettyDate=d=>d?new Date(d+'T12:00:00').toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'No due date';
+$('quickForm').onsubmit=e=>{e.preventDefault();const title=$('taskTitle').value.trim();if(!title)return;tasks.push({id:uid(),title,notes:$('taskNotes').value.trim(),raw:$('rawRequest').value.trim(),due:$('taskDue').value,priority:$('taskPriority').value,category:$('taskCategory').value,status:$('taskStatus').value,created:todayISO(),completedAt:''});$('quickForm').reset();save()};
+$('polish').onclick=()=>{const raw=$('rawRequest').value.trim();if(!raw){$('rawRequest').focus();return}
+  let c=raw.replace(/\s+/g,' ').replace(/^(hi|hello|hey)[,!\s]+/i,'').replace(/^(please|can you|could you|would you)\s+/i,'').replace(/[.!?]+$/,'');c=c.charAt(0).toUpperCase()+c.slice(1);
+  if(!/^(update|create|prepare|design|send|review|confirm|contact|upload|organise|organize|check|complete|draft|schedule|publish|follow up|follow-up|compile|submit|arrange|call|email|write|finalise|finalize)\b/i.test(c))c='Review and action request: '+c;
+  $('taskTitle').value=c;$('taskNotes').value='Original request: '+raw+'\n\nPlease confirm any missing details before starting.'};
+function taskCard(t){return `<div class="task ${isDone(t)?'done':''}"><input aria-label="Mark complete" type="checkbox" ${isDone(t)?'checked':''} onchange="toggleTask('${t.id}',this.checked)"><div><div class="tasktitle">${esc(t.title)}</div><div class="taskmeta"><span>${esc(t.category)}</span><span>·</span><span>${t.due?'Due '+esc(prettyDate(t.due)):'No due date'}</span><span class="pill ${esc((t.priority||'').toLowerCase())}">${esc(t.priority)}</span><span class="pill">${esc(t.status)}</span>${isOverdue(t)?'<span class="pill high">Overdue</span>':''}</div>${t.notes?`<details style="margin-top:7px;font-size:11px;color:var(--muted)"><summary>Details / original request</summary><p style="white-space:pre-wrap">${esc(t.notes)}</p></details>`:''}</div><div class="taskactions"><button class="iconbtn" title="Edit" onclick="editTask('${t.id}')">✎</button><button class="iconbtn" title="Delete" onclick="deleteTask('${t.id}')">×</button></div></div>`}
+window.toggleTask=(id,c)=>{const t=tasks.find(x=>x.id===id);if(t){t.status=c?'Completed':'To do';t.completedAt=c?todayISO():'';save()}};
+window.deleteTask=id=>{if(confirm('Delete this task?')){tasks=tasks.filter(t=>t.id!==id);save()}};
+const opts=(a,v)=>a.map(x=>`<option ${v===x?'selected':''}>${x}</option>`).join('');
+window.editTask=id=>{const t=tasks.find(x=>x.id===id);if(!t)return;
+  openModal('Edit task',`<div class="field"><label>TASK TITLE</label><input name="title" required value="${esc(t.title)}"></div><div class="field"><label>DETAILS</label><textarea name="notes">${esc(t.notes||'')}</textarea></div><div class="rowfields"><div class="field"><label>DUE DATE</label><input name="due" type="date" value="${esc(t.due||'')}"></div><div class="field"><label>PRIORITY</label><select name="priority">${opts(['High','Medium','Low'],t.priority)}</select></div></div><div class="rowfields"><div class="field"><label>CATEGORY</label><select name="category">${opts(['Admin','Marketing','Reception','HR','Property','Other'],t.category)}</select></div><div class="field"><label>STATUS</label><select name="status">${opts(['To do','In progress','Waiting','Completed'],t.status)}</select></div></div><button class="btn primary" type="submit">Save changes</button>`,
+  d=>{Object.assign(t,d,{completedAt:d.status==='Completed'?(t.completedAt||todayISO()):''});save()})};
+function renderTasks(){const s=$('taskSearch').value.toLowerCase(),f=$('taskFilter').value;let l=tasks.filter(t=>((t.title||'')+' '+(t.notes||'')+' '+t.category).toLowerCase().includes(s));
+  if(f==='open')l=l.filter(t=>!isDone(t));if(f==='done')l=l.filter(isDone);if(f==='overdue')l=l.filter(isOverdue);
+  l.sort((a,b)=>(isDone(a)-isDone(b))||((a.due||'9999').localeCompare(b.due||'9999')));$('allTasks').innerHTML=l.length?l.map(taskCard).join(''):'<div class="empty">No tasks match this view yet.</div>'}
+$('taskSearch').oninput=renderTasks;$('taskFilter').onchange=renderTasks;
+
+/* ---------- Documents ---------- */
+function renderDocs(){const s=$('docSearch').value.toLowerCase(),f=$('docFilter').value;const l=docs.filter(d=>(d.name+' '+d.folder).toLowerCase().includes(s)&&(f==='all'||d.folder===f));
+  $('docList').innerHTML=l.length?l.map(d=>`<div class="doc"><div class="fileico">▤</div><div class="docinfo"><strong>${esc(d.name)}</strong><small>${esc(d.folder)} · ${esc(d.size||'Link saved')} · Added ${esc(d.added||'')}</small><small>Version note: ${esc(d.version||'Initial copy')}</small><div><button class="btn" onclick="openDoc('${d.id}')">Open / download</button> <button class="btn" onclick="updateDoc('${d.id}')">Update version</button> <button class="iconbtn" onclick="deleteDoc('${d.id}')">×</button></div></div></div>`).join(''):'<div class="empty">No documents yet. Add a file or start with a link.</div>'}
+window.openDoc=id=>{const d=docs.find(x=>x.id===id);if(d&&d.url)window.open(d.url,'_blank','noopener');else alert('No link saved for this entry.')};
+window.deleteDoc=id=>{if(confirm('Remove this document entry? (The file stays in your Drive.)')){docs=docs.filter(x=>x.id!==id);save()}};
+window.updateDoc=id=>{pendingUpdate=id;$('fileInput').click()};
+$('uploadBtn').onclick=()=>{pendingUpdate=null;openModal('Add document',`<div class="field"><label>DOCUMENT FILE (OPTIONAL)</label><input type="file" name="file"></div><div class="field"><label>DOCUMENT NAME</label><input name="name" required placeholder="e.g. Agent onboarding checklist"></div><div class="field"><label>FOLDER</label><select name="folder">${opts(['HR & onboarding','Brand & marketing','Property','Admin & compliance','Other'])}</select></div><div class="field"><label>VERSION NOTE</label><input name="version" placeholder="e.g. Updated October 2026"></div><div class="field"><label>OR AN EXTERNAL LINK</label><input name="url" type="url" placeholder="https://…"></div><button class="btn primary" type="submit">Save document entry</button>`,
+  async d=>{const f=d.file,item={id:uid(),name:d.name,folder:d.folder,version:d.version||'Initial copy',url:d.url||'',added:todayISO(),size:''};
+    if(f&&f.size){const u=await uploadFileToDrive(f);item.url=u.webViewLink;item.driveFileId=u.id;item.size=Math.round(u.size/1024)+' KB'}docs.unshift(item);save()})};
+$('fileInput').onchange=async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{const u=await uploadFileToDrive(f),d=docs.find(x=>x.id===pendingUpdate);if(d){Object.assign(d,{url:u.webViewLink,driveFileId:u.id,version:'Updated '+todayISO(),size:Math.round(u.size/1024)+' KB',added:todayISO()});save()}}
+  catch(err){alert(err.message||'Upload failed.')}pendingUpdate=null};
+$('docSearch').oninput=renderDocs;$('docFilter').onchange=renderDocs;
+
+/* ---------- Marketing ---------- */
+function renderAssets(){const s=$('assetSearch').value.toLowerCase();const l=assets.filter(a=>(a.name+' '+a.kind+' '+(a.notes||'')).toLowerCase().includes(s));
+  $('assetList').innerHTML=l.length?l.map(a=>`<div class="asset"><div class="fileico">✧</div><strong>${esc(a.name)}</strong><small>${esc(a.kind)}${a.notes?' · '+esc(a.notes):''}</small><div><button class="btn" onclick="openAsset('${a.id}')">Open resource ↗</button> <button class="iconbtn" onclick="deleteAsset('${a.id}')">×</button></div></div>`).join(''):'<div class="empty">Your marketing library is ready for its first Canva link.</div>'}
+$('assetAdd').onclick=()=>openModal('Add marketing resource',`<div class="field"><label>RESOURCE NAME</label><input name="name" required placeholder="e.g. Property listing post template"></div><div class="field"><label>TYPE</label><select name="kind">${opts(['Canva template','Brand asset','Campaign','Caption / copy','Reference','Other'])}</select></div><div class="field"><label>LINK</label><input name="url" type="url" required placeholder="https://www.canva.com/…"></div><div class="field"><label>NOTES</label><textarea name="notes"></textarea></div><button class="btn primary" type="submit">Save resource</button>`,d=>{assets.unshift({id:uid(),...d});save()});
+$('assetSearch').oninput=renderAssets;
+window.openAsset=id=>{const a=assets.find(x=>x.id===id);if(a&&a.url)window.open(a.url,'_blank','noopener')};
+window.deleteAsset=id=>{if(confirm('Remove this resource?')){assets=assets.filter(a=>a.id!==id);save()}};
+
+/* ---------- Reports ---------- */
+const monthList=()=>{const m=$('reportMonth').value||monthISO(),c=$('reportCategory').value;return{m,list:tasks.filter(t=>(t.created||'').startsWith(m)||(t.completedAt||'').startsWith(m)).filter(t=>c==='all'||t.category===c)}};
+function renderReports(){const{m,list}=monthList();$('repDone').textContent=list.filter(t=>isDone(t)&&(t.completedAt||'').startsWith(m)).length;$('repOpen').textContent=list.filter(t=>!isDone(t)).length;$('repLate').textContent=list.filter(isOverdue).length;
+  const c={};list.forEach(t=>c[t.category]=(c[t.category]||0)+1);
+  $('categoryBreakdown').innerHTML=Object.keys(c).length?Object.entries(c).map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px"><span>${esc(k)}</span><strong>${v} task${v===1?'':'s'}</strong></div>`).join(''):'<div class="empty">No tasks recorded for this month yet.</div>';
+  $('reportList').innerHTML=list.length?[...list].sort((a,b)=>(a.due||'').localeCompare(b.due||'')).map(taskCard).join(''):'<div class="empty">Tasks will appear here as you use Petal Desk.</div>'}
+$('reportMonth').value=monthISO();$('reportMonth').onchange=renderReports;$('reportCategory').onchange=renderReports;
+$('exportCsv').onclick=()=>{const{m,list}=monthList(),cell=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const csv=[['Title','Details','Category','Priority','Status','Due date','Created','Completed'],...list.map(t=>[t.title,t.notes,t.category,t.priority,t.status,t.due,t.created,t.completedAt])].map(r=>r.map(cell).join(',')).join('\r\n');
+  const url=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'})),a=document.createElement('a');a.href=url;a.download=`petal-desk-report-${m}.csv`;a.click();URL.revokeObjectURL(url)};
+
+/* ---------- Modal ---------- */
+function openModal(title,html,onSave){$('modalTitle').textContent=title;$('modalForm').innerHTML=html;$('modalBack').classList.add('open');
+  $('modalForm').onsubmit=async e=>{e.preventDefault();const d={};for(const[k,v]of new FormData(e.target).entries())d[k]=v;
+    try{await onSave(d);$('modalBack').classList.remove('open')}catch(err){alert(err.message||'Something went wrong.')}}}
+$('modalClose').onclick=()=>$('modalBack').classList.remove('open');$('modalBack').onclick=e=>{if(e.target===$('modalBack'))$('modalBack').classList.remove('open')};
+
+/* ---------- Dashboard ---------- */
+function render(){const t0=todayISO(),week=iso(new Date(Date.now()+7*864e5));
+  const today=tasks.filter(t=>t.due===t0&&!isDone(t)),done=tasks.filter(t=>isDone(t)&&(t.completedAt||'').startsWith(monthISO())),up=tasks.filter(t=>!isDone(t)&&t.due>=t0&&t.due<=week),late=tasks.filter(isOverdue);
+  $('todayCount').textContent=today.length;$('completedCount').textContent=done.length;$('upcomingCount').textContent=up.length;$('overdueCount').textContent=late.length;
+  const focus=[...today,...tasks.filter(t=>!isDone(t)&&t.due!==t0).sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'))].slice(0,5);
+  $('todayList').innerHTML=focus.length?focus.map(taskCard).join(''):'<div class="empty">Nothing due today. Add a task when a request comes in, or take a breath. ♡</div>';
+  renderTasks();renderDocs();renderAssets();renderReports()}
+render();
+window.addEventListener('load',()=>{let n=0;const w=setInterval(()=>{if(initDrive()||++n>20||!hasId())clearInterval(w)},300)});
+</script>
+</body></html>
