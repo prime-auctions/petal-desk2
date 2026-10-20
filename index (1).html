@@ -43,6 +43,15 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 @media(max-width:900px){.shell{grid-template-columns:190px 1fr}.stats{grid-template-columns:repeat(2,1fr)}.grid2,.doclist,.assetlist{grid-template-columns:1fr}}
 @media(max-width:620px){.shell{display:block}.side{padding:12px;position:sticky;top:0;z-index:30;border-right:0;border-bottom:1px solid var(--line);gap:12px}.navlabel{display:none}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap;padding:8px 10px;font-size:12px}
 .sidefoot{margin-top:0;padding:10px}.sidefoot p{display:none}.main{padding:22px 14px}.topright .btn{display:none}.rowfields{grid-template-columns:1fr}.reportcards{grid-template-columns:1fr 1fr}}
+.banner{background:#f9e4e2;border:1px solid #efc9c5;color:#8f4540;padding:11px 14px;border-radius:12px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:13px}
+.calhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.calhead h3{font:500 21px Georgia,serif;margin:0}
+.calgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}.dow{font-size:10px;font-weight:700;color:var(--muted);text-align:center;letter-spacing:1px;padding:4px 0}
+.day{min-height:92px;background:#fff;border:1px solid #f0e8e8;border-radius:9px;padding:5px;cursor:pointer;overflow:hidden}.day.blank{background:transparent;border:0;cursor:default}.day.today{border-color:var(--rose);background:#fdf5f7}.day b{font-size:11px;color:var(--muted)}
+.chip{display:block;font-size:10px;line-height:1.3;padding:2px 5px;margin-top:3px;border-radius:5px;background:#f3edef;color:#6d5d62;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.chip.high{background:#f9e4e2;color:#a04f4b}.chip.medium{background:#f8efd9;color:#8d6b2d}.chip.low{background:#e8f2eb;color:#54765e}.chip.done{text-decoration:line-through;opacity:.55}.more{font-size:10px;color:var(--muted)}
+.aiout{white-space:pre-wrap;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:13px;min-height:90px;margin-top:12px}.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+#printArea{display:none}
+@media(max-width:620px){.day{min-height:58px;padding:3px}.chip{font-size:9px}}
+@media print{.shell,.modalback,#banner{display:none!important}#printArea{display:block;padding:20px;color:#222;font:13px/1.5 Georgia,serif}body{background:#fff}#printArea h1{font-size:26px;margin:0}#printArea h2{font-size:16px;margin:22px 0 8px;border-bottom:1px solid #ccc}#printArea table{width:100%;border-collapse:collapse}#printArea td,#printArea th{text-align:left;padding:5px;border-bottom:1px solid #eee;font-size:12px}}
 </style>
 </head>
 <body>
@@ -52,15 +61,18 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
  <div><div class="navlabel">Workspace</div><nav class="nav" id="nav">
   <button type="button" class="active" data-page="dashboard"><span class="ico">⌂</span>Dashboard</button>
   <button type="button" data-page="tasks"><span class="ico">✓</span>My tasks</button>
+  <button type="button" data-page="calendar"><span class="ico">▦</span>Calendar</button>
   <button type="button" data-page="documents"><span class="ico">▤</span>Documents</button>
   <button type="button" data-page="marketing"><span class="ico">✧</span>Marketing studio</button>
   <button type="button" data-page="reports"><span class="ico">▥</span>Monthly reports</button>
+ <button type="button" data-page="ai"><span class="ico">✦</span>AI assistant</button>
  </nav></div>
  <div class="sidefoot"><strong>Little by little.</strong><p>Only upload files you are authorised to store in this Google Drive account.</p>
   <button class="btn soft" id="driveBtn" type="button">☁ Connect Google Drive</button><span id="driveStatus">Saved in this browser</span></div>
 </aside>
 <main class="main">
  <header class="top"><div><div class="eyebrow" id="eyebrow">YOUR WORKSPACE</div><h1 id="pageTitle">Good day. Let's get focused.</h1><div class="subtitle" id="pageSub">A little structure can make a busy day feel lighter.</div></div><div class="topright"><button class="btn primary" id="topAdd">＋ New task</button><div class="avatar">PL</div></div></header>
+ <div class="banner hidden" id="banner"><span id="bannerText"></span><button class="btn" id="bannerBtn" type="button">Review</button></div>
  <section id="dashboard" class="section active">
   <div class="stats">
    <div class="stat"><div class="stathead">Today's tasks <span class="sym">☼</span></div><div class="big" id="todayCount">0</div><div class="note">Due today</div></div>
@@ -88,6 +100,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
    <div class="searchrow"><input class="search" id="taskSearch" placeholder="Search tasks…"><select class="search" id="taskFilter" style="max-width:190px"><option value="all">All tasks</option><option value="open">Open tasks</option><option value="done">Completed</option><option value="overdue">Overdue</option></select></div><div class="tasklist" id="allTasks"></div>
   </div>
  </section>
+ <section id="calendar" class="section"><div class="panel"><div class="calhead"><h3 id="calTitle"></h3><div><button class="btn" id="calPrev" type="button">‹</button> <button class="btn" id="calToday" type="button">Today</button> <button class="btn" id="calNext" type="button">›</button></div></div><div class="calgrid" id="calGrid"></div><p class="muted" style="font-size:11px">Click a day to add a task; click a task to edit it.</p></div></section>
  <section id="documents" class="section">
   <div class="panel"><div class="panelhead"><div><h2>Document library</h2><p>Find the right file and keep track of updates.</p></div><button class="btn primary" id="uploadBtn">＋ Add document</button></div>
    <div class="notice">Files you add are uploaded to a "Petal Desk" folder in your Google Drive (connect Drive first). Up to 10 MB each.</div>
@@ -102,10 +115,18 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
    <div class="searchrow"><input class="search" id="assetSearch" placeholder="Search marketing resources…"></div><div class="assetlist" id="assetList"></div>
   </div>
  </section>
+ <section id="ai" class="section"><div class="panel"><div class="panelhead"><div><h2>AI assistant</h2><p>Free help with tasks, replies and summaries.</p></div></div>
+  <div class="notice">Uses Google's free Gemini. Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a> and paste it below once in each browser. On the free tier Google may use what you send to improve its products, so avoid private client details.</div>
+  <div class="rowfields"><div class="field"><label for="aiKey">GEMINI API KEY</label><input id="aiKey" type="password" autocomplete="off"></div><div class="field"><label for="aiModel">MODEL</label><input id="aiModel"></div></div>
+  <div style="margin:10px 0 18px"><button class="btn soft" id="aiSave" type="button">Save key</button> <small id="aiSaved" class="muted"></small></div>
+  <div class="chips"><button class="btn" id="aiPlan" type="button">☼ Plan my day</button><button class="btn" id="aiSumm" type="button">▥ Summarise this month</button><button class="btn" id="aiReply" type="button">✉ Draft a reply</button><button class="btn" id="aiCaption" type="button">✿ Property caption</button></div>
+  <div class="field"><label for="aiInput">ASK ANYTHING</label><textarea id="aiInput"></textarea></div>
+  <div style="margin-top:10px"><button class="btn primary" id="aiSend" type="button">Send</button> <button class="btn" id="aiCopy" type="button">Copy answer</button></div><div class="aiout" id="aiOut">Answers appear here.</div></div></section>
  <section id="reports" class="section">
-  <div class="panel"><div class="panelhead"><div><h2>Monthly report</h2><p>A clear summary of your work for the month you choose.</p></div><button class="btn primary" id="exportCsv">Export CSV ↓</button></div>
+  <div class="panel"><div class="panelhead"><div><h2>Monthly report</h2><p>A clear summary of your work for the month you choose.</p></div><div style="display:flex;gap:8px"><button class="btn" id="exportCsv">Export CSV ↓</button><button class="btn primary" id="printBtn">🖨 Print / PDF</button></div></div>
    <div class="rowfields" style="max-width:450px"><div class="field"><label for="reportMonth">REPORT MONTH</label><input type="month" id="reportMonth"></div><div class="field"><label for="reportCategory">CATEGORY</label><select id="reportCategory"><option value="all">All categories</option><option>Admin</option><option>Marketing</option><option>Reception</option><option>HR</option><option>Property</option><option>Other</option></select></div></div>
    <div class="reportcards"><div class="reportcard"><span>Completed in month</span><strong id="repDone">0</strong></div><div class="reportcard"><span>Still open</span><strong id="repOpen">0</strong></div><div class="reportcard"><span>Marked overdue</span><strong id="repLate">0</strong></div></div>
+   <div class="field" style="margin-bottom:16px"><label for="repSummary">SUMMARY FOR THE PRINTED REPORT (OPTIONAL)</label><textarea id="repSummary" placeholder="Write a few lines, or let AI draft it."></textarea><div><button class="btn soft" id="repAI" type="button" style="margin-top:8px">✧ Write summary with AI</button></div></div>
    <div class="panelhead"><div><h2 style="font-size:19px">Work breakdown</h2><p>Tasks grouped by category.</p></div></div><div id="categoryBreakdown"></div>
    <div class="panelhead" style="margin-top:24px"><div><h2 style="font-size:19px">Report details</h2></div></div><div class="tasklist" id="reportList"></div>
   </div>
@@ -115,10 +136,11 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}
 </div>
 <div class="modalback" id="modalBack"><div class="modal"><div class="modalhead"><h2 id="modalTitle"></h2><button class="close" id="modalClose" type="button">×</button></div><form id="modalForm" class="quickform"></form></div></div>
 
+<div id="printArea"></div>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
 /* ====== SETUP: paste your Google OAuth Client ID between the quotes (see instructions) ====== */
-const CLIENT_ID='464167985622-b5q9epsngrvqo8519gi41evnfdumi8u9.apps.googleusercontent.com';
+const CLIENT_ID='PASTE_YOUR_CLIENT_ID_HERE';
 /* ========================================================================================== */
 const $=id=>document.getElementById(id);
 const KEY='petalDesk.v1',DRIVE_FLAG='petalDesk.drive';
@@ -195,7 +217,7 @@ async function uploadFileToDrive(file){
 }
 
 /* ---------- Navigation ---------- */
-const infoMap={dashboard:['YOUR WORKSPACE',"Good day. Let's get focused.",'A little structure can make a busy day feel lighter.'],tasks:['YOUR WORKSPACE','My tasks','Every request has a next step.'],documents:['YOUR LIBRARY','Documents','The current version, easier to find.'],marketing:['CREATIVE CORNER','Marketing studio','Keep your brand resources close at hand.'],reports:['YOUR PROGRESS','Monthly reports','A record of the work you make happen.']};
+const infoMap={dashboard:['YOUR WORKSPACE',"Good day. Let's get focused.",'A little structure can make a busy day feel lighter.'],tasks:['YOUR WORKSPACE','My tasks','Every request has a next step.'],documents:['YOUR LIBRARY','Documents','The current version, easier to find.'],marketing:['CREATIVE CORNER','Marketing studio','Keep your brand resources close at hand.'],reports:['YOUR PROGRESS','Monthly reports','A record of the work you make happen.'],calendar:['YOUR SCHEDULE','Calendar','See what is due, day by day.'],ai:['YOUR ASSISTANT','AI assistant','A helping hand for the small stuff.']};
 function go(p){
   document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===p));
   document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===p));
@@ -271,7 +293,59 @@ function render(){const t0=todayISO(),week=iso(new Date(Date.now()+7*864e5));
   $('todayCount').textContent=today.length;$('completedCount').textContent=done.length;$('upcomingCount').textContent=up.length;$('overdueCount').textContent=late.length;
   const focus=[...today,...tasks.filter(t=>!isDone(t)&&t.due!==t0).sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'))].slice(0,5);
   $('todayList').innerHTML=focus.length?focus.map(taskCard).join(''):'<div class="empty">Nothing due today. Add a task when a request comes in, or take a breath. ♡</div>';
-  renderTasks();renderDocs();renderAssets();renderReports()}
+  renderTasks();renderDocs();renderAssets();renderReports();renderCal();renderBanner()}
+/* ---------- Overdue banner & calendar ---------- */
+function renderBanner(){const n=tasks.filter(isOverdue).length;$('banner').classList.toggle('hidden',!n);$('bannerText').textContent=n?`⚠ You have ${n} overdue task${n===1?'':'s'}.`:'';document.title=(n?`(${n}) `:'')+'Petal Desk — Work Hub'}
+$('bannerBtn').onclick=()=>{go('tasks');$('taskFilter').value='overdue';renderTasks()};
+let calY=new Date().getFullYear(),calM=new Date().getMonth();
+function renderCal(){const first=new Date(calY,calM,1),off=(first.getDay()+6)%7,n=new Date(calY,calM+1,0).getDate(),t0=todayISO();
+  $('calTitle').textContent=first.toLocaleDateString(undefined,{month:'long',year:'numeric'});
+  let h=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<div class="dow">${d}</div>`).join('')+'<div class="day blank"></div>'.repeat(off);
+  for(let d=1;d<=n;d++){const ds=`${calY}-${pad(calM+1)}-${pad(d)}`,ts=tasks.filter(t=>t.due===ds);
+    h+=`<div class="day ${ds===t0?'today':''}" onclick="addOnDay('${ds}')"><b>${d}</b>${ts.slice(0,3).map(t=>`<span class="chip ${esc((t.priority||'').toLowerCase())} ${isDone(t)?'done':''}" title="${esc(t.title)}" onclick="event.stopPropagation();editTask('${t.id}')">${esc(t.title)}</span>`).join('')}${ts.length>3?`<span class="more">+${ts.length-3} more</span>`:''}</div>`}
+  $('calGrid').innerHTML=h}
+$('calPrev').onclick=()=>{calM--;if(calM<0){calM=11;calY--}renderCal()};
+$('calNext').onclick=()=>{calM++;if(calM>11){calM=0;calY++}renderCal()};
+$('calToday').onclick=()=>{const d=new Date();calY=d.getFullYear();calM=d.getMonth();renderCal()};
+window.addOnDay=ds=>openModal('New task for '+prettyDate(ds),`<div class="field"><label>TASK TITLE</label><input name="title" required></div><div class="field"><label>DETAILS</label><textarea name="notes"></textarea></div><div class="rowfields"><div class="field"><label>PRIORITY</label><select name="priority">${opts(['Medium','High','Low'])}</select></div><div class="field"><label>CATEGORY</label><select name="category">${opts(['Admin','Marketing','Reception','HR','Property','Other'])}</select></div></div><button class="btn primary" type="submit">Add task</button>`,
+  d=>{tasks.push({id:uid(),title:d.title,notes:d.notes,raw:'',due:ds,priority:d.priority,category:d.category,status:'To do',created:todayISO(),completedAt:''});save()});
+
+/* ---------- Printable report ---------- */
+$('printBtn').onclick=()=>{const{m,list}=monthList(),done=list.filter(t=>isDone(t)&&(t.completedAt||'').startsWith(m)),open=list.filter(t=>!isDone(t)),c={};list.forEach(t=>c[t.category]=(c[t.category]||0)+1);
+  const rows=a=>a.length?a.map(t=>`<tr><td>${esc(t.title)}</td><td>${esc(t.category)}</td><td>${esc(t.priority)}</td><td>${esc(prettyDate(t.due))}</td></tr>`).join(''):'<tr><td colspan="4">None</td></tr>';
+  const head='<tr><th>Task</th><th>Category</th><th>Priority</th><th>Due</th></tr>',label=new Date(m+'-01T12:00:00').toLocaleDateString(undefined,{month:'long',year:'numeric'}),sm=$('repSummary').value.trim();
+  $('printArea').innerHTML=`<h1>Monthly report — ${esc(label)}</h1><p>Prepared ${esc(prettyDate(todayISO()))}${$('reportCategory').value!=='all'?' · '+esc($('reportCategory').value):''}</p><p><b>${done.length}</b> completed · <b>${open.length}</b> still open · <b>${list.filter(isOverdue).length}</b> overdue</p>${sm?`<h2>Summary</h2><p style="white-space:pre-wrap">${esc(sm)}</p>`:''}<h2>By category</h2><table>${Object.entries(c).map(([k,v])=>`<tr><td>${esc(k)}</td><td>${v}</td></tr>`).join('')||'<tr><td>No tasks</td></tr>'}</table><h2>Completed</h2><table>${head}${rows(done)}</table><h2>Still open</h2><table>${head}${rows(open)}</table>`;window.print()};
+
+/* ---------- AI assistant (Google Gemini free tier) ---------- */
+const aiKey=()=>localStorage.getItem('petalDesk.aiKey')||'',aiModel=()=>localStorage.getItem('petalDesk.aiModel')||'gemini-2.5-flash-lite';
+$('aiKey').value=aiKey();$('aiModel').value=aiModel();
+$('aiSave').onclick=()=>{localStorage.setItem('petalDesk.aiKey',$('aiKey').value.trim());localStorage.setItem('petalDesk.aiModel',$('aiModel').value.trim()||'gemini-2.5-flash-lite');$('aiSaved').textContent='✓ Saved in this browser'};
+async function askAI(prompt,system){
+  if(!aiKey())throw new Error('Add your free Gemini key first (AI assistant page).');
+  const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(aiModel())}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':aiKey()},body:JSON.stringify({systemInstruction:{parts:[{text:system||'You are a friendly, concise work assistant for an office administrator at a property auction company. Use plain, warm language.'}]},contents:[{role:'user',parts:[{text:prompt}]}]})});
+  if(r.status===429)throw new Error('The free AI limit was reached. Wait a minute and try again.');
+  if(!r.ok)throw new Error(r.status===400||r.status===403||r.status===404?'Gemini rejected the key or model name. Check them on the AI assistant page.':'AI request failed ('+r.status+').');
+  const j=await r.json();return((j.candidates||[])[0]?.content?.parts||[]).map(p=>p.text||'').join('').trim()||'(No answer came back. Try rephrasing.)'}
+async function withBusy(btn,fn){const o=btn.textContent;btn.disabled=true;btn.textContent='Thinking…';try{await fn()}catch(e){alert(e.message)}btn.disabled=false;btn.textContent=o}
+const taskLine=t=>`- ${t.title} [${t.category}, ${t.priority}, ${t.status}${t.due?', due '+t.due:''}${isOverdue(t)?', OVERDUE':''}]`;
+const aiShow=x=>{$('aiOut').textContent=x};
+async function monthSummary(){const{m,list}=monthList();if(!list.length)throw new Error('No tasks in the selected report month yet.');
+  return askAI(`Write a short, professional summary (2-3 paragraphs, first person) of my work for ${m}. Tasks:\n${list.slice(0,60).map(taskLine).join('\n')}\n\nMention what was completed, what is still open or overdue, and the main areas of focus. Do not invent details.`)}
+const oldPolish=$('polish').onclick;
+$('polish').onclick=()=>{if(!aiKey())return oldPolish();const raw=$('rawRequest').value.trim();if(!raw){$('rawRequest').focus();return}
+  withBusy($('polish'),async()=>{const t=await askAI(`Today is ${todayISO()}. Turn this request into one task. Reply ONLY with JSON: {"title":"short action starting with a verb","notes":"key details, one or two lines","due":"YYYY-MM-DD or empty","priority":"High|Medium|Low","category":"Admin|Marketing|Reception|HR|Property|Other"}\n\nRequest:\n${raw}`,'You turn messy requests into clear tasks. Output valid JSON only.');
+    let o;try{o=JSON.parse(t.replace(/```json|```/g,'').trim())}catch(e){throw new Error('The AI answer could not be read. Try again.')}
+    $('taskTitle').value=o.title||raw;$('taskNotes').value=(o.notes?o.notes+'\n\n':'')+'Original request: '+raw;
+    if(/^\d{4}-\d{2}-\d{2}$/.test(o.due||''))$('taskDue').value=o.due;if(['High','Medium','Low'].includes(o.priority))$('taskPriority').value=o.priority;if([...$('taskCategory').options].some(x=>x.value===o.category))$('taskCategory').value=o.category})};
+$('aiPlan').onclick=()=>withBusy($('aiPlan'),async()=>{const l=tasks.filter(t=>!isDone(t)).slice(0,40);if(!l.length)throw new Error('You have no open tasks to plan.');
+  aiShow(await askAI(`Today is ${todayISO()}. My open tasks:\n${l.map(taskLine).join('\n')}\n\nWhat should I focus on today? Give a short ordered plan (max 6 items) with a one-line reason each. Overdue first.`))});
+$('aiSumm').onclick=()=>withBusy($('aiSumm'),async()=>aiShow(await monthSummary()));
+$('repAI').onclick=()=>withBusy($('repAI'),async()=>{$('repSummary').value=await monthSummary()});
+$('aiReply').onclick=()=>{$('aiInput').value='Draft a polite, short reply to this message:\n\n';$('aiInput').focus()};
+$('aiCaption').onclick=()=>{$('aiInput').value='Write a friendly social media caption for this property, with 3 hashtags:\n\n';$('aiInput').focus()};
+$('aiSend').onclick=()=>{const q=$('aiInput').value.trim();if(!q)return;withBusy($('aiSend'),async()=>aiShow(await askAI(q)))};
+$('aiCopy').onclick=()=>navigator.clipboard.writeText($('aiOut').textContent).then(()=>{$('aiCopy').textContent='Copied ✓';setTimeout(()=>$('aiCopy').textContent='Copy answer',1500)});
+
 render();
 window.addEventListener('load',()=>{let n=0;const w=setInterval(()=>{if(initDrive()||++n>20||!hasId())clearInterval(w)},300)});
 </script>
